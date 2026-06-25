@@ -23,7 +23,8 @@ module.exports = class DeliveryService extends cds.ApplicationService {
       const db = await cds.connect.to('db');
 
       // Step 0: Pre-checks (db only — no external service needed)
-      await this._checkNotAlreadyMerged(db, DeliveryDocument, DeliveryDocumentItem);
+      const alreadyMerged = await this._checkNotAlreadyMerged(db, DeliveryDocument, DeliveryDocumentItem);
+      if (alreadyMerged) return req.error(409, alreadyMerged);
 
       // Resolve the external OData service only after pre-checks pass
       const odApi = await cds.connect.to('API_OUTBOUND_DELIVERY_SRV');
@@ -81,13 +82,17 @@ module.exports = class DeliveryService extends cds.ApplicationService {
       SELECT.one.from('rio.batchmerge.MergeLog')
         .where({ DeliveryDocument: deliveryDocument, DeliveryDocumentItem: deliveryDocumentItem, MergeStatus: 'MERGED' })
     );
-    if (existing) throw new Error(`OD ${deliveryDocument} item ${deliveryDocumentItem} has already been merged. New batch: ${existing.NewBatch}`);
+    if (existing) return `OD ${deliveryDocument} item ${deliveryDocumentItem} has already been merged. New batch: ${existing.NewBatch}`;
+    return null;
   }
 
   async _getSubItems(odApi, deliveryDocument, deliveryDocumentItem) {
     return odApi.run(
       SELECT.from('API_OUTBOUND_DELIVERY_SRV.A_OutbDeliveryItem')
-        .where({ DeliveryDocument: deliveryDocument, DeliveryDocumentItemCategory: SPLIT_ITEM_CATEGORY })
+        .where({
+          DeliveryDocument: deliveryDocument,
+          DeliveryDocumentItemCategory: SPLIT_ITEM_CATEGORY
+        })
     );
   }
 
