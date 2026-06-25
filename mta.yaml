@@ -16,7 +16,6 @@ modules:
       build-result: .
       ignore: ['.env', 'node_modules/']
     requires:
-      - name: rio-batch-merge-db
       - name: rio-batch-merge-dest
       - name: rio-batch-merge-auth
     provides:
@@ -49,12 +48,6 @@ modules:
         - npx ui5 build --dest dist
 
 resources:
-  - name: rio-batch-merge-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      service: hana
-      service-plan: hdi-shared
-
   - name: rio-batch-merge-dest
     type: org.cloudfoundry.managed-service
     parameters:

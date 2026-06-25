@@ -3,7 +3,7 @@ const { calculateWeightedAverage } = require('./lib/weighted-average');
 
 // Lazy-loaded: node-rfc requires the SAP RFC SDK native binary, which is only
 // available on production hosts. Loading it lazily means tests can boot the
-// service and exercise non-RFC paths (e.g. pre-checks) without the SDK.
+// service and exercise non-RFC paths without the SDK.
 let _batchRfc;
 function getBatchRfc() {
   if (!_batchRfc) _batchRfc = require('./lib/batch-rfc');
@@ -18,19 +18,15 @@ module.exports = class DeliveryService extends cds.ApplicationService {
     this.on('merge', async (req) => {
       const { DeliveryDocument, DeliveryDocumentItem } = req.data;
 
-      // Resolve db immediately; odApi is deferred until after pre-checks so that
-      // tests without a live S/4HANA backend can exercise the "already MERGED" guard.
-      const db = await cds.connect.to('db');
+      // Step 0: Pre-check — derive merge status from OD structure
+      const subItems = await this._getSubItems(DeliveryDocument, DeliveryDocumentItem);
 
-      // Step 0: Pre-checks (db only — no external service needed)
-      const alreadyMerged = await this._checkNotAlreadyMerged(db, DeliveryDocument, DeliveryDocumentItem);
-      if (alreadyMerged) return req.error(409, alreadyMerged);
-
-      // Resolve the external OData service only after pre-checks pass
-      const odApi = await cds.connect.to('API_OUTBOUND_DELIVERY_SRV');
-      const subItems = await this._getSubItems(odApi, DeliveryDocument, DeliveryDocumentItem);
+      if (subItems.length === 0) {
+        // No ZTA1 sub-items means OD item already has a single batch — already merged
+        return req.error(409, `OD ${DeliveryDocument} item ${DeliveryDocumentItem} has no batch splits — already merged or merge not required`);
+      }
       if (subItems.length < 2) {
-        return req.error(400, `OD ${DeliveryDocument} item ${DeliveryDocumentItem} has ${subItems.length} batch split(s) — merge not required`);
+        return req.error(400, `OD ${DeliveryDocument} item ${DeliveryDocumentItem} has only 1 batch split — merge not required`);
       }
 
       // Step 1: Calculate weighted averages using WMT (qty) as weight basis
@@ -42,10 +38,11 @@ module.exports = class DeliveryService extends cds.ApplicationService {
       const plant = subItems[0].Plant;
       const rfcCredentials = this._getRfcCredentials();
 
+      // Step 2–5: Execute merge chain
+      const { createBatch, updateBatchCharacteristics, createMaterialDocument } = getBatchRfc();
       let newBatch;
       try {
         // Step 2: Create new Delivery Batch via BAPI_BATCH_CREATE + COMMIT
-        const { createBatch, updateBatchCharacteristics, createMaterialDocument } = getBatchRfc();
         newBatch = await createBatch(rfcCredentials, material, plant);
 
         // Step 3: Write weighted average characteristics via BAPI_BATCH_CHANGE + COMMIT
@@ -61,15 +58,11 @@ module.exports = class DeliveryService extends cds.ApplicationService {
         await createMaterialDocument(rfcCredentials, splitItemsForRfc, newBatch, plant);
 
         // Step 5: Update OD Item to point to new delivery batch
-        await this._updateODItem(odApi, DeliveryDocument, DeliveryDocumentItem, newBatch, totalQty);
-
-        // Step 6: Record success
-        await this._saveMergeLog(db, DeliveryDocument, DeliveryDocumentItem, 'MERGED', newBatch, null);
+        await this._updateODItem(DeliveryDocument, DeliveryDocumentItem, newBatch, totalQty);
 
         return { NewBatch: newBatch, Message: `Batch merge successful. New delivery batch: ${newBatch}` };
 
       } catch (err) {
-        await this._saveMergeLog(db, DeliveryDocument, DeliveryDocumentItem, 'FAILED', newBatch || null, err.message);
         return req.error(500, `Merge failed: ${err.message}. New batch (if created): ${newBatch || 'none'}. Please clean up manually in S/4HANA (MSC2N).`);
       }
     });
@@ -77,16 +70,12 @@ module.exports = class DeliveryService extends cds.ApplicationService {
     return super.init();
   }
 
-  async _checkNotAlreadyMerged(db, deliveryDocument, deliveryDocumentItem) {
-    const existing = await db.run(
-      SELECT.one.from('rio.batchmerge.MergeLog')
-        .where({ DeliveryDocument: deliveryDocument, DeliveryDocumentItem: deliveryDocumentItem, MergeStatus: 'MERGED' })
-    );
-    if (existing) return `OD ${deliveryDocument} item ${deliveryDocumentItem} has already been merged. New batch: ${existing.NewBatch}`;
-    return null;
+  async _odApi() {
+    return cds.connect.to('API_OUTBOUND_DELIVERY_SRV');
   }
 
-  async _getSubItems(odApi, deliveryDocument, deliveryDocumentItem) {
+  async _getSubItems(deliveryDocument, deliveryDocumentItem) {
+    const odApi = await this._odApi();
     return odApi.run(
       SELECT.from('API_OUTBOUND_DELIVERY_SRV.A_OutbDeliveryItem')
         .where({
@@ -120,7 +109,8 @@ module.exports = class DeliveryService extends cds.ApplicationService {
     return result;
   }
 
-  async _updateODItem(odApi, deliveryDocument, deliveryDocumentItem, newBatch, totalQty) {
+  async _updateODItem(deliveryDocument, deliveryDocumentItem, newBatch, totalQty) {
+    const odApi = await this._odApi();
     await odApi.run(
       UPDATE('API_OUTBOUND_DELIVERY_SRV.A_OutbDeliveryItem')
         .set({ Batch: newBatch, ActualDeliveryQuantity: String(totalQty) })
@@ -133,30 +123,5 @@ module.exports = class DeliveryService extends cds.ApplicationService {
     if (env && env.credentials) return env.credentials;
     if (process.env.RFC_CREDENTIALS) return JSON.parse(process.env.RFC_CREDENTIALS);
     return { dest: 'S4HANA_PCE_RFC' };
-  }
-
-  async _saveMergeLog(db, deliveryDocument, deliveryDocumentItem, status, newBatch, errorMessage) {
-    const existing = await db.run(
-      SELECT.one.from('rio.batchmerge.MergeLog')
-        .where({ DeliveryDocument: deliveryDocument, DeliveryDocumentItem: deliveryDocumentItem })
-    );
-    if (existing) {
-      await db.run(
-        UPDATE('rio.batchmerge.MergeLog')
-          .set({ MergeStatus: status, NewBatch: newBatch, ErrorMessage: errorMessage })
-          .where({ ID: existing.ID })
-      );
-    } else {
-      await db.run(
-        INSERT.into('rio.batchmerge.MergeLog').entries({
-          ID: cds.utils.uuid(),
-          DeliveryDocument: deliveryDocument,
-          DeliveryDocumentItem: deliveryDocumentItem,
-          MergeStatus: status,
-          NewBatch: newBatch,
-          ErrorMessage: errorMessage,
-        })
-      );
-    }
   }
 };

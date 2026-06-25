@@ -1,5 +1,4 @@
 using { API_OUTBOUND_DELIVERY_SRV as OD } from './external/API_OUTBOUND_DELIVERY_SRV';
-using { rio.batchmerge as db } from '../db/merge-status';
 
 service DeliveryService @(path: '/delivery') {
 
@@ -14,6 +13,7 @@ service DeliveryService @(path: '/delivery') {
   };
 
   // Outbound Delivery Items — read from S/4HANA via OData
+  // MergeStatus is derived: PENDING (>=2 ZTA1 sub-items), MERGED (single Batch, no sub-items)
   @readonly
   entity DeliveryItems as projection on OD.A_OutbDeliveryItem {
     DeliveryDocument,
@@ -24,9 +24,6 @@ service DeliveryService @(path: '/delivery') {
     Batch,
     DeliveryDocumentItemCategory as ItemCategory
   };
-
-  // Local merge log — read/write in HANA
-  entity MergeLog as projection on db.MergeLog;
 
   // Merge action — orchestrates RFC BAPI calls for batch create/update
   action merge(
