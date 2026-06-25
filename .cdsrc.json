@@ -1,0 +1,29 @@
+{
+  "requires": {
+    "API_OUTBOUND_DELIVERY_SRV": {
+      "kind": "odata-v2",
+      "model": "srv/external/API_OUTBOUND_DELIVERY_SRV",
+      "[production]": {
+        "credentials": {
+          "destination": "S4HANA_PCE_HTTP",
+          "path": "/sap/opu/odata/sap/OP_API_OUTBOUND_DELIVERY_SRV_0002"
+        }
+      }
+    },
+    "S4HANA_RFC": {
+      "kind": "rfc",
+      "[production]": {
+        "credentials": {
+          "destination": "S4HANA_PCE_RFC"
+        }
+      }
+    },
+    "db": {
+      "kind": "hana",
+      "[development]": {
+        "kind": "sqlite",
+        "credentials": { "database": ":memory:" }
+      }
+    }
+  }
+}
