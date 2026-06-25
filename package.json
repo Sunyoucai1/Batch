@@ -7,7 +7,8 @@
   "private": true,
   "dependencies": {
     "@sap/cds": "^9",
-    "express": "^4"
+    "express": "^4",
+    "node-rfc": "^3.3.1"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2.4.0",

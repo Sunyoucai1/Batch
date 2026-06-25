@@ -1,0 +1,28 @@
+{
+  "namespace": "API_OUTBOUND_DELIVERY_SRV",
+  "definitions": {
+    "API_OUTBOUND_DELIVERY_SRV.A_OutbDeliveryHeader": {
+      "kind": "entity",
+      "elements": {
+        "DeliveryDocument": { "type": "cds.String", "length": 10, "@key": true },
+        "ShipToParty":      { "type": "cds.String", "length": 10 },
+        "DocumentDate":     { "type": "cds.Date" },
+        "TotalWeight":      { "type": "cds.Decimal", "precision": 13, "scale": 3 },
+        "WeightUnit":       { "type": "cds.String", "length": 3 }
+      }
+    },
+    "API_OUTBOUND_DELIVERY_SRV.A_OutbDeliveryItem": {
+      "kind": "entity",
+      "elements": {
+        "DeliveryDocument":              { "type": "cds.String", "length": 10, "@key": true },
+        "DeliveryDocumentItem":          { "type": "cds.String", "length": 6, "@key": true },
+        "Material":                      { "type": "cds.String", "length": 40 },
+        "ActualDeliveryQuantity":        { "type": "cds.Decimal", "precision": 13, "scale": 3 },
+        "Batch":                         { "type": "cds.String", "length": 10 },
+        "Plant":                         { "type": "cds.String", "length": 4 },
+        "StorageLocation":               { "type": "cds.String", "length": 4 },
+        "DeliveryDocumentItemCategory":  { "type": "cds.String", "length": 4 }
+      }
+    }
+  }
+}
