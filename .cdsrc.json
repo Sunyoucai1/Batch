@@ -10,14 +10,6 @@
         }
       }
     },
-    "S4HANA_RFC": {
-      "kind": "rfc",
-      "[production]": {
-        "credentials": {
-          "destination": "S4HANA_PCE_RFC"
-        }
-      }
-    },
     "db": {
       "kind": "hana",
       "[development]": {
