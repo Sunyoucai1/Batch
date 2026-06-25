@@ -1,0 +1,77 @@
+_schema-version: '3.1'
+ID: rio-batch-merge
+version: 1.0.0
+description: OT Batch Merge App — CALM 3-2445
+
+modules:
+  - name: rio-batch-merge-srv
+    type: nodejs
+    path: .
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 256M
+      disk-quota: 512M
+    build-parameters:
+      builder: npm
+      build-result: .
+      ignore: ['.env', 'node_modules/']
+    requires:
+      - name: rio-batch-merge-db
+      - name: rio-batch-merge-dest
+      - name: rio-batch-merge-auth
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: '${default-url}'
+
+  - name: rio-batch-merge-ui-deployer
+    type: com.sap.application.content
+    path: app
+    requires:
+      - name: rio-batch-merge-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: riobatchmergeapp
+          artifacts: ['rio-batch-merge.zip']
+          target-path: resources/
+
+  - name: riobatchmergeapp
+    type: html5
+    path: app/batch-merge
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npx ui5 build --dest dist
+
+resources:
+  - name: rio-batch-merge-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+  - name: rio-batch-merge-dest
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+
+  - name: rio-batch-merge-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      config:
+        xsappname: rio-batch-merge
+        tenant-mode: dedicated
+
+  - name: rio-batch-merge-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
