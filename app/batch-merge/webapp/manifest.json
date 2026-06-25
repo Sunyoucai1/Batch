@@ -3,8 +3,8 @@
   "sap.app": {
     "id": "rio.batchmerge",
     "type": "application",
-    "title": "{{appTitle}}",
-    "description": "{{appDescription}}",
+    "title": "Batch Merge",
+    "description": "Merge batch splits into a single delivery batch with weighted average characteristics",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": { "version": "1.0.0" },
     "dataSources": {
@@ -60,52 +60,6 @@
             "settings": {
               "entitySet": "OutboundDeliveries",
               "contextPath": "/OutboundDeliveries"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    "dependencies": {
-      "minUI5Version": "1.120.0",
-      "libs": {
-        "sap.fe.templates": {}
-      }
-    },
-    "routing": {
-      "config": { "routerClass": "sap.fe.core.AppRouter" },
-      "routes": [
-        {
-          "name": "OutboundDeliveriesList",
-          "pattern": "",
-          "target": "OutboundDeliveriesList"
-        },
-        {
-          "name": "OutboundDeliveriesObjectPage",
-          "pattern": "OutboundDeliveries({key})",
-          "target": "OutboundDeliveriesObjectPage"
-        }
-      ],
-      "targets": {
-        "OutboundDeliveriesList": {
-          "type": "Component",
-          "id": "OutboundDeliveriesList",
-          "name": "sap.fe.templates.ListReport",
-          "options": {
-            "settings": {
-              "entitySet": "OutboundDeliveries",
-              "variantManagement": "Page"
-            }
-          }
-        },
-        "OutboundDeliveriesObjectPage": {
-          "type": "Component",
-          "id": "OutboundDeliveriesObjectPage",
-          "name": "sap.fe.templates.ObjectPage",
-          "options": {
-            "settings": {
-              "entitySet": "OutboundDeliveries"
             }
           }
         }
