@@ -14,7 +14,7 @@ describe('calculateWeightedAverage', () => {
 
   test('calculates weighted average Au correctly', () => {
     const result = calculateWeightedAverage(batchSplits, 'AU');
-    expect(result).toBeCloseTo(7.8001, 3);
+    expect(result).toBeCloseTo(7.800, 3);
   });
 
   test('throws when batchSplits is empty', () => {
@@ -23,11 +23,14 @@ describe('calculateWeightedAverage', () => {
 
   test('throws when characteristic not found on any split', () => {
     const splits = [{ qty: 100, characteristics: {} }];
-    expect(() => calculateWeightedAverage(splits, 'CU')).toThrow('Characteristic CU not found');
+    expect(() => calculateWeightedAverage(splits, 'CU')).toThrow("Characteristic 'CU' not found");
   });
 
-  test('calculates total quantity correctly', () => {
-    const result = calculateWeightedAverage(batchSplits, 'CU');
-    expect(typeof result).toBe('number');
+  test('throws when total quantity is zero', () => {
+    const splits = [
+      { qty: 0, characteristics: { CU: 22.0 } },
+      { qty: 0, characteristics: { CU: 21.0 } },
+    ];
+    expect(() => calculateWeightedAverage(splits, 'CU')).toThrow('Total quantity is zero');
   });
 });
