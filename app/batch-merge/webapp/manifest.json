@@ -1,7 +1,7 @@
 {
   "_version": "1.65.0",
   "sap.app": {
-    "id": "rio.batchmerge",
+    "id": "com.riotinto.btp.ms.batchmerge",
     "type": "application",
     "title": "Batch Merge",
     "description": "Merge batch splits into a single delivery batch with weighted average characteristics",

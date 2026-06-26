@@ -1,0 +1,11 @@
+{
+  "name": "com-riotinto-btp-ms-batchmerge-ui",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0"
+  },
+  "scripts": {
+    "build": "ui5 build --dest dist"
+  }
+}

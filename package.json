@@ -1,5 +1,5 @@
 {
-  "name": "rio-batch-merge",
+  "name": "com-riotinto-btp-ms-batchmerge",
   "version": "1.0.0",
   "description": "CAP application for merging batch splits on Outbound Delivery Items",
   "repository": "<Add your repository here>",

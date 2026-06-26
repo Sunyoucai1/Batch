@@ -1,0 +1,120 @@
+{
+  "A_OutbDeliveryHeader": [
+    {
+      "DeliveryDocument": "802297577",
+      "ShipToParty": "3003014",
+      "DocumentDate": "2024-10-15",
+      "TotalWeight": "5783.130",
+      "WeightUnit": "TO"
+    },
+    {
+      "DeliveryDocument": "802297578",
+      "ShipToParty": "3003014",
+      "DocumentDate": "2024-10-16",
+      "TotalWeight": "4200.000",
+      "WeightUnit": "TO"
+    }
+  ],
+  "A_OutbDeliveryItem": [
+    {
+      "DeliveryDocument": "802297577",
+      "DeliveryDocumentItem": "000010",
+      "Material": "70302166",
+      "Plant": "3010",
+      "ActualDeliveryQuantity": "0.000",
+      "Batch": "",
+      "StorageLocation": "0001",
+      "DeliveryDocumentItemCategory": "ZTAB"
+    },
+    {
+      "DeliveryDocument": "802297577",
+      "DeliveryDocumentItem": "900001",
+      "Material": "70302166",
+      "Plant": "3010",
+      "ActualDeliveryQuantity": "642.420",
+      "Batch": "1000014620",
+      "StorageLocation": "0001",
+      "DeliveryDocumentItemCategory": "ZTA1"
+    },
+    {
+      "DeliveryDocument": "802297577",
+      "DeliveryDocumentItem": "900002",
+      "Material": "70302166",
+      "Plant": "3010",
+      "ActualDeliveryQuantity": "642.620",
+      "Batch": "1000014623",
+      "StorageLocation": "0001",
+      "DeliveryDocumentItemCategory": "ZTA1"
+    },
+    {
+      "DeliveryDocument": "802297577",
+      "DeliveryDocumentItem": "900003",
+      "Material": "70302166",
+      "Plant": "3010",
+      "ActualDeliveryQuantity": "642.920",
+      "Batch": "1000014624",
+      "StorageLocation": "0001",
+      "DeliveryDocumentItemCategory": "ZTA1"
+    },
+    {
+      "DeliveryDocument": "802297577",
+      "DeliveryDocumentItem": "900004",
+      "Material": "70302166",
+      "Plant": "3010",
+      "ActualDeliveryQuantity": "642.370",
+      "Batch": "1000014625",
+      "StorageLocation": "0001",
+      "DeliveryDocumentItemCategory": "ZTA1"
+    },
+    {
+      "DeliveryDocument": "802297577",
+      "DeliveryDocumentItem": "900005",
+      "Material": "70302166",
+      "Plant": "3010",
+      "ActualDeliveryQuantity": "642.520",
+      "Batch": "1000014622",
+      "StorageLocation": "0001",
+      "DeliveryDocumentItemCategory": "ZTA1"
+    },
+    {
+      "DeliveryDocument": "802297577",
+      "DeliveryDocumentItem": "900006",
+      "Material": "70302166",
+      "Plant": "3010",
+      "ActualDeliveryQuantity": "642.420",
+      "Batch": "1000014621",
+      "StorageLocation": "0001",
+      "DeliveryDocumentItemCategory": "ZTA1"
+    },
+    {
+      "DeliveryDocument": "802297577",
+      "DeliveryDocumentItem": "900007",
+      "Material": "70302166",
+      "Plant": "3010",
+      "ActualDeliveryQuantity": "642.370",
+      "Batch": "1000014626",
+      "StorageLocation": "0001",
+      "DeliveryDocumentItemCategory": "ZTA1"
+    },
+    {
+      "DeliveryDocument": "802297577",
+      "DeliveryDocumentItem": "900008",
+      "Material": "70302166",
+      "Plant": "3010",
+      "ActualDeliveryQuantity": "642.620",
+      "Batch": "1000014627",
+      "StorageLocation": "0001",
+      "DeliveryDocumentItemCategory": "ZTA1"
+    },
+    {
+      "DeliveryDocument": "802297578",
+      "DeliveryDocumentItem": "000010",
+      "Material": "70302166",
+      "Plant": "3010",
+      "ActualDeliveryQuantity": "4200.000",
+      "Batch": "1000099999",
+      "StorageLocation": "0001",
+      "DeliveryDocumentItemCategory": "ZTAB"
+    }
+  ]
+}

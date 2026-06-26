@@ -4,18 +4,28 @@
     "API_OUTBOUND_DELIVERY_SRV.A_OutbDeliveryHeader": {
       "kind": "entity",
       "elements": {
-        "DeliveryDocument": { "type": "cds.String", "length": 10, "@key": true },
+        "DeliveryDocument": { "type": "cds.String", "length": 10, "key": true },
         "ShipToParty":      { "type": "cds.String", "length": 10 },
         "DocumentDate":     { "type": "cds.Date" },
         "TotalWeight":      { "type": "cds.Decimal", "precision": 13, "scale": 3 },
-        "WeightUnit":       { "type": "cds.String", "length": 3 }
+        "WeightUnit":       { "type": "cds.String", "length": 3 },
+        "to_DeliveryDocumentItem": {
+          "type": "cds.Composition",
+          "cardinality": { "max": "*" },
+          "target": "API_OUTBOUND_DELIVERY_SRV.A_OutbDeliveryItem",
+          "on": [
+            { "ref": ["to_DeliveryDocumentItem", "DeliveryDocument"] },
+            "=",
+            { "ref": ["DeliveryDocument"] }
+          ]
+        }
       }
     },
     "API_OUTBOUND_DELIVERY_SRV.A_OutbDeliveryItem": {
       "kind": "entity",
       "elements": {
-        "DeliveryDocument":              { "type": "cds.String", "length": 10, "@key": true },
-        "DeliveryDocumentItem":          { "type": "cds.String", "length": 6, "@key": true },
+        "DeliveryDocument":              { "type": "cds.String", "length": 10, "key": true },
+        "DeliveryDocumentItem":          { "type": "cds.String", "length": 6, "key": true },
         "Material":                      { "type": "cds.String", "length": 40 },
         "ActualDeliveryQuantity":        { "type": "cds.Decimal", "precision": 13, "scale": 3 },
         "Batch":                         { "type": "cds.String", "length": 10 },

@@ -1,10 +1,10 @@
 _schema-version: '3.1'
-ID: rio-batch-merge
+ID: com-riotinto-btp-ms-batchmerge
 version: 1.0.0
 description: OT Batch Merge App — CALM 3-2445
 
 modules:
-  - name: rio-batch-merge-srv
+  - name: com-riotinto-btp-ms-batchmerge-srv
     type: nodejs
     path: .
     parameters:
@@ -16,28 +16,28 @@ modules:
       build-result: .
       ignore: ['.env', 'node_modules/']
     requires:
-      - name: rio-batch-merge-dest
-      - name: rio-batch-merge-auth
+      - name: com-riotinto-btp-ms-batchmerge-dest
+      - name: com-riotinto-btp-ms-batchmerge-auth
     provides:
       - name: srv-api
         properties:
           srv-url: '${default-url}'
 
-  - name: rio-batch-merge-ui-deployer
+  - name: com-riotinto-btp-ms-batchmerge-ui-deployer
     type: com.sap.application.content
     path: app
     requires:
-      - name: rio-batch-merge-html5-repo-host
+      - name: com-riotinto-btp-ms-batchmerge-html5-repo-host
         parameters:
           content-target: true
     build-parameters:
       build-result: resources
       requires:
-        - name: riobatchmergeapp
-          artifacts: ['rio-batch-merge.zip']
+        - name: com-riotinto-btp-ms-batchmerge-app
+          artifacts: ['com-riotinto-btp-ms-batchmerge.zip']
           target-path: resources/
 
-  - name: riobatchmergeapp
+  - name: com-riotinto-btp-ms-batchmerge-app
     type: html5
     path: app/batch-merge
     build-parameters:
@@ -48,22 +48,22 @@ modules:
         - npx ui5 build --dest dist
 
 resources:
-  - name: rio-batch-merge-dest
+  - name: com-riotinto-btp-ms-batchmerge-dest
     type: org.cloudfoundry.managed-service
     parameters:
       service: destination
       service-plan: lite
 
-  - name: rio-batch-merge-auth
+  - name: com-riotinto-btp-ms-batchmerge-auth
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
       service-plan: application
       config:
-        xsappname: rio-batch-merge
+        xsappname: com-riotinto-btp-ms-batchmerge
         tenant-mode: dedicated
 
-  - name: rio-batch-merge-html5-repo-host
+  - name: com-riotinto-btp-ms-batchmerge-html5-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
       service: html5-apps-repo

@@ -9,7 +9,8 @@ service DeliveryService @(path: '/delivery') {
     ShipToParty,
     DocumentDate,
     TotalWeight,
-    WeightUnit
+    WeightUnit,
+    to_DeliveryDocumentItem as DeliveryItems
   };
 
   // Outbound Delivery Items — read from S/4HANA via OData
