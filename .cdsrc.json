@@ -9,13 +9,13 @@
       "[hybrid]": {
         "credentials": {
           "destination": "RD1CLNT510_HTTPS",
-          "path": "/sap/opu/odata/sap/API_OUTBOUND_DELIVERY_SRV;v=0002"
+          "path": "/sap/opu/odata/sap/ZAPI_OUTBOUND_DELIVERY_SRV;v=0002"
         }
       },
       "[production]": {
         "credentials": {
           "destination": "RD1CLNT510_HTTPS",
-          "path": "/sap/opu/odata/sap/API_OUTBOUND_DELIVERY_SRV;v=0002"
+          "path": "/sap/opu/odata/sap/ZAPI_OUTBOUND_DELIVERY_SRV;v=0002"
         }
       }
     },

@@ -28,12 +28,12 @@
         "[production]": { "kind": "ams" },
         "kind": "mocked"
       },
-      "ZAPI_OUTBOUND_DELIVERY_SRV2": {
+      "API_OUTBOUND_DELIVERY_SRV": {
         "kind": "odata-v2",
-        "model": "srv/external/ZAPI_OUTBOUND_DELIVERY_SRV2",
+        "model": "srv/external/API_OUTBOUND_DELIVERY_SRV",
         "credentials": {
           "destination": "RD1CLNT510_HTTPS",
-          "path": "/sap/opu/odata/sap/API_OUTBOUND_DELIVERY_SRV;v=0002"
+          "path": "/sap/opu/odata/sap/ZAPI_OUTBOUND_DELIVERY_SRV;v=0002"
         }
       },
       "S4_HTTP": {
