@@ -3,13 +3,28 @@
     "API_OUTBOUND_DELIVERY_SRV": {
       "kind": "odata-v2",
       "model": "srv/external/API_OUTBOUND_DELIVERY_SRV",
+      "[development]": {
+        "credentials": {}
+      },
+      "[hybrid]": {
+        "credentials": {
+          "destination": "RD1CLNT510_HTTPS",
+          "path": "/sap/opu/odata/sap/API_OUTBOUND_DELIVERY_SRV;v=0002"
+        }
+      },
       "[production]": {
         "credentials": {
           "destination": "RD1CLNT510_HTTPS",
           "path": "/sap/opu/odata/sap/API_OUTBOUND_DELIVERY_SRV;v=0002"
         }
       }
+    },
+    "[development]": {
+      "auth": "dummy"
     }
   },
-  "mocked": ["API_OUTBOUND_DELIVERY_SRV"]
+  "[development]": {
+    "mocked": ["API_OUTBOUND_DELIVERY_SRV"]
+  }
 }
+ 

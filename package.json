@@ -7,8 +7,7 @@
   "private": true,
   "dependencies": {
     "@sap/cds": "^9",
-    "express": "^4",
-    "node-rfc": "^3.3.1"
+    "express": "^4"
   },
   "devDependencies": {
     "@cap-js/cds-test": "^1.0.1",
@@ -22,5 +21,27 @@
   },
   "jest": {
     "testEnvironment": "node"
+  },
+  "cds": {
+    "requires": {
+      "auth": {
+        "[production]": { "kind": "ams" },
+        "kind": "mocked"
+      },
+      "ZAPI_OUTBOUND_DELIVERY_SRV2": {
+        "kind": "odata-v2",
+        "model": "srv/external/ZAPI_OUTBOUND_DELIVERY_SRV2",
+        "credentials": {
+          "destination": "RD1CLNT510_HTTPS",
+          "path": "/sap/opu/odata/sap/API_OUTBOUND_DELIVERY_SRV;v=0002"
+        }
+      },
+      "S4_HTTP": {
+        "kind": "rest",
+        "credentials": {
+          "destination": "RD1CLNT510_HTTPS"
+        }
+      }
+    }
   }
 }
