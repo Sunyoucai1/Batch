@@ -24,7 +24,7 @@
     }
   },
   "[development]": {
-    "mocked": ["API_OUTBOUND_DELIVERY_SRV"]
+    "mocked": []
   }
 }
  
